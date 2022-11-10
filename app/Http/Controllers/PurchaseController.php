@@ -35,9 +35,9 @@ class PurchaseController extends Controller
             $whereClause .= "and Deliver like '%{$keyword}%' ";
         }
         $purchase = Purchase::leftJoin('Purchasedetail','Purchase.PurchaseId', '=', 'Purchasedetail.PurchaseId')
-        ->selectRaw('sum(Purchasedetail.Quantity*Price) as TongTien, CreateAt, DisplayName, Deliver, PhoneNumber, Address,Email, Status, Purchase.PurchaseId')
+        ->selectRaw('sum(Purchasedetail.Quantity*Price) as TongTien, CreateAt, DisplayName, Deliver, PhoneNumber, Address,Email, Status,EmployeeId, Purchase.PurchaseId')
         ->whereRaw("{$whereClause}")->orderBy('CreateAt','desc')
-        ->GroupByRaw('CreateAt, DisplayName, Deliver, PhoneNumber, Address,Email, Status, Purchase.PurchaseId');
+        ->GroupByRaw('CreateAt, DisplayName, Deliver, PhoneNumber, Address,Email, Status, EmployeeId, Purchase.PurchaseId');
         $count = count($purchase->get());
         $page = ceil($count/5);
 
@@ -152,5 +152,77 @@ class PurchaseController extends Controller
             "product"=>$product,
             "supplier"=>$supplier
         ]);
+    }
+
+    public function GetInfoSupplier(Request $request){
+        if(session('admin')==null){
+            return redirect('admin');
+        }
+        $request = $request->all();
+        $id = $request["id"];
+        $supplier = User::find($id);
+        return json_encode($supplier);
+    }
+    public function GetInfoProduct(Request $request){
+        if(session('admin')==null){
+            return redirect('admin');
+        }
+        $request = $request->all();
+        $id = $request["id"];
+        $product = Product::find($id);
+        return json_encode($product);
+    }
+
+    public function SubmitCreatePurchase(Request $request){
+        if(session('admin')==null){
+            return redirect('admin');
+        }
+        $request=$request->all();
+        $PurchaseId = $request["PurchaseId"];
+        $SupplierId = $request["SupplierId"];
+        $Deliver = $request["Deliver"];
+        $Address = $request["Address"];
+        $PhoneNumber = $request["PhoneNumber"];
+        $Email = $request["Email"];
+        $Product = $request["Product"];
+        try{
+            $purchase = new Purchase();
+            $purchase->Status = $PurchaseId;
+            $purchase->SupplierId = $SupplierId;
+            $purchase->Deliver = $Deliver;
+            $purchase->Address = $Address;
+            $purchase->PhoneNumber = $PhoneNumber;
+            $purchase->EmployeeId = session('admin')->UserId;
+            $purchase->Email = $Email;
+            $purchase->CreateAt = Carbon::now();
+            $purchase->CreateBy = session('admin')->UserId;
+            $purchase->save();
+            foreach ($Product as $item) {
+                $product = Product::find($item["ProductId"]);
+                $product->Quantity+=$item["Quantity"];
+                $product->Price=$item["Price"] * 1.2;
+                $product->PeriodOfGuarantee=$item["PeriodOfGuarantee"];
+                $product->save();
+                $purchasedetail = new PurchaseDetail();
+                $purchasedetail->PurchaseId =  $purchase->PurchaseId;
+                $purchasedetail->ProductId  =  $item["ProductId"];
+                $purchasedetail->Quantity =  $item["Quantity"];
+                $purchasedetail->Price =  $item["Price"];
+                $purchasedetail->save();
+                $stt = Productdetail::where('ProductId','=',$item["ProductId"])->max('STT');
+                foreach ($item["IMEI"] as $imei) {
+                    $stt+=1;
+                    $productdetail = new Productdetail();
+                    $productdetail->ProductId = $purchasedetail->ProductId;
+                    $productdetail->ProductDetailId = $purchasedetail->ProductDetailId;
+                    $productdetail->STT = $stt;
+                    $productdetail->SerialNumber = $imei;
+                    $productdetail->save();
+                }
+            }
+            return 1;
+        } catch (\Throwable $th) {
+            return 0;
+        }
     }
 }

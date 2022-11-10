@@ -76,7 +76,10 @@ class Purchase extends Model
 	{
 		return $this->belongsTo(User::class, 'SupplierId');
 	}
-
+	public function supplier()
+	{
+		return $this->belongsTo(User::class, 'EmployeeId');
+	}
 	public function purchasedetails()
 	{
 		return $this->hasMany(Purchasedetail::class, 'PurchaseId');

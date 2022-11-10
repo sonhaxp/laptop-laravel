@@ -59,9 +59,14 @@ Route::get('order/ListOrder', [CartController::class,'ListOrder']);
 Route::post('purchase/DeletePurchase', [PurchaseController::class, 'DeletePurchase']);
 Route::get('purchase/UpdatePurchase', [PurchaseController::class, 'UpdatePurchase']);
 Route::get('purchase/CreatePurchase', [PurchaseController::class, 'CreatePurchase']);
-Route::get('purchase/SubmitCreatePurchase', [PurchaseController::class, 'SubmitCreatePurchase']);
+Route::post('purchase/SubmitCreatePurchase', [PurchaseController::class, 'SubmitCreatePurchase']);
 Route::post('purchase/SubmitUpdatePurchase', [PurchaseController::class, 'SubmitUpdatePurchase']);
 Route::get('purchase/ListPurchase', [PurchaseController::class,'ListPurchase']);
+Route::get('GetInfoSupplier', [PurchaseController::class,'GetInfoSupplier']);
+Route::get('GetInfoProduct', [PurchaseController::class,'GetInfoProduct']);
+Route::get('GetPurchaseDetail/{id}',function ($id) {
+    return PurchaseController::GetPurchaseDetail($id);
+});
 
 Route::post('Rate', [UserController::class,'Rate']);
 

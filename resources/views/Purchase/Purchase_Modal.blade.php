@@ -1,7 +1,7 @@
 ﻿<div class="row">
     <div class="col-12 col-sm-12 col-md-12 col-lg-12">
         <div class="section-title">
-            <h3>Thông tin đặt hàng</h3>
+            <h3>Thông tin hóa đơn</h3>
         </div>
         <form action="#">
             <div class="table-responsive">
@@ -15,7 +15,7 @@
                             <td width="150px">Tổng</td>
                         </tr>
                     </thead>
-                    {{-- <tbody>
+                    <tbody>
                         @foreach ($products as $item)
                             <tr>
                                 <td >
@@ -47,11 +47,11 @@
                                 </td>
                             </tr>
                         @endforeach
-                    </tbody> --}}
+                    </tbody>
                 </table>
             </div>
         </form>
-        {{-- <div class="cart-amount-wrapper">
+        <div class="cart-amount-wrapper">
             <div class="row">
                 <div class="col-12 col-sm-12 col-md-4 offset-md-8">
                     <table class="table table-bordered">
@@ -64,7 +64,7 @@
                     </table>
                 </div>
             </div>
-        </div> --}}
+        </div>
     </div>
 </div>
 

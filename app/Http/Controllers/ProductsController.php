@@ -372,6 +372,7 @@ class ProductsController extends Controller
         $request = $request->all();
         $id = $request["product"];
         try {
+            $Attributedetail = Attributedetail::whereRaw("ProductId = {$id}")->delete();
             $adm = Product::find($id)->delete();
             return 1;
         }

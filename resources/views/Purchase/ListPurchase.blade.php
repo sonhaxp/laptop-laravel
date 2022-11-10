@@ -22,7 +22,7 @@
                 </select>
             </div>
             <div class="col-lg-4">
-                Nhà cung cấp <input class="w300" id="Name" name="Name" type="text" />
+                Người giao <input class="w300" id="Name" name="Name" type="text" />
             </div>
             <input class="w300" id="pageCurrent" name="pageCurrent" hidden type="text" value="1" />
             <div class="col-lg-4 align-self-center">
@@ -36,8 +36,9 @@
             <tr>
                 <th>Ngày</th>
                 <th>Mã hóa đơn</th>
+                <th>Người lập</th>
                 <th>Giá trị</th>
-                <th>Người nhận</th>
+                <th>Người giao</th>
                 <th>Số điện thoại</th>
                 <th>Địa chỉ</th>
                 <th>Email</th>
@@ -48,8 +49,9 @@
                 <tr data-id="{{ $item->PurchaseId }}">
                     <td>{{ $item->CreateAt->format('d-m-Y') }}</td>
                     <td>{{ $item->PurchaseId }}</td>
+                    <td>{{ $item->supplier->Name }}</td>
                     <td>{{ number_format($item->TongTien, 0, '', ',')."vnđ" }}</td>
-                    <td>{{ $item->Receiver }}</td>
+                    <td>{{ $item->Deliver }}</td>
                     <td>{{ $item->PhoneNumber }}</td>
                     <td>{{ $item->Address }}</td>
                     <td>{{ $item->Email }}</td>
@@ -111,7 +113,7 @@
     $(document).on("click", "#show-transaction", function () {
     var id = $(this).attr("name");
     $.ajax({
-        url: "/GetPurchaseDetailAdmin/" + id,
+        url: "/GetPurchaseDetail/" + id,
         method: "GET",
         success: function (res) {
             $(".modal-body").html(res);
